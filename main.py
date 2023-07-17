@@ -10,10 +10,10 @@ rh.rainbow.set_clear_on_exit()
 
 debug = False
 
-if len(sys.argv) > 0:
+if len(sys.argv) > 1:
     try:
-        debug = bool(sys.argv[0])
-    except:
+        debug = bool(sys.argv[1])
+    except TypeError:
         print('Invalid Argument')
 
 class Screen(Enum):
