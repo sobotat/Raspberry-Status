@@ -1,20 +1,11 @@
 #!/usr/bin/env python
 import time
-import sys
 import rainbowhat as rh
 from cpu import CPUInfo
 from util import Util
 from enum import Enum
 
 rh.rainbow.set_clear_on_exit()
-
-debug = False
-
-if len(sys.argv) > 1:
-    try:
-        debug = bool(sys.argv[1])
-    except TypeError:
-        print('Invalid Argument')
 
 class Screen(Enum):
     OFF = 1
@@ -25,23 +16,20 @@ currentStat = Screen.TEMP
 
 @rh.touch.A.press()
 def touch_a(channel):
-    global currentStat, debug
-    if debug:
-        print("Button A touched!")
+    global currentStat
+    print("Button A touched!")
     currentStat = Screen.TEMP
 
 @rh.touch.B.press()
 def touch_b(channel):
-    global currentStat, debug
-    if debug:
-        print("Button B touched!")
+    global currentStat
+    print("Button B touched!")
     currentStat = Screen.LOAD
 
 @rh.touch.C.press()
 def touch_c(channel):
-    global currentStat, debug
-    if debug:
-        print("Button C touched!")
+    global currentStat
+    print("Button C touched!")
     currentStat = Screen.OFF
 
 
@@ -73,8 +61,7 @@ while True:
     temp = round(CPUInfo.get_cpu_temperature() / 100.0, 4)
     load = round(CPUInfo.get_cpu_load() / 100.0, 4)
     
-    if debug:
-        print_debug()
+    print_debug()
 
     if currentStat == Screen.TEMP:
         show_graph(temp, Util.lerp(0, 255, temp), Util.lerp(255, 0, temp), 0)

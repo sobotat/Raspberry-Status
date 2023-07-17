@@ -6,7 +6,7 @@
 
 ### Run in background
 ```bash
-    sudo python -u main.py True > output.log 2>&1 &
+    nohup sudo python -u main.py > "output.log" 2>&1 < /dev/null &
 ```
 
 ### Turn Off
