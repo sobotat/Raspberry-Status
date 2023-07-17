@@ -1,29 +1,35 @@
 #!/usr/bin/env python
 import time
 import rainbowhat as rh
-import util, cpu, screen
+import util, cpu
+from enum import Enum
 
 rh.rainbow.set_clear_on_exit()
 
-currentStat = screen.Screen.TEMP
+class Screen(Enum):
+    OFF = 1
+    TEMP = 2
+    LOAD = 3
+
+currentStat = Screen.TEMP
 
 @rh.touch.A.press()
 def touch_a(channel):
     global currentStat
     print("Button A touched!")
-    currentStat = screen.Screen.TEMP
+    currentStat = Screen.TEMP
 
 @rh.touch.B.press()
 def touch_b(channel):
     global currentStat
     print("Button B touched!")
-    currentStat = screen.Screen.LOAD
+    currentStat = Screen.LOAD
 
 @rh.touch.C.press()
 def touch_c(channel):
     global currentStat
     print("Button C touched!")
-    currentStat = screen.Screen.OFF
+    currentStat = Screen.OFF
 
 
 def show_graph(v, r, g, b):
@@ -50,11 +56,11 @@ while True:
 
     print(f"TEMP {temp * 100}, LOAD {load * 100}, MODE {currentStat}")
 
-    if currentStat == screen.Screen.TEMP:
+    if currentStat == Screen.TEMP:
         show_graph(temp, util.lerp(0, 255, temp), util.lerp(255, 0, temp), 0)
         display_message(temp + 'C')
         rh.lights.rgb(1, 0, 0)
-    elif currentStat == screen.Screen.LOAD:
+    elif currentStat == Screen.LOAD:
         show_graph(load, util.lerp(0, 255, load), util.lerp(255, 0, load), 0)
         display_message(load + '%')
         rh.lights.rgb(0, 1, 0)
