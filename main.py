@@ -13,24 +13,29 @@ class Screen(Enum):
     LOAD = 3
 
 currentStat = Screen.TEMP
+defaultTimeToOff = 10
+remainingTime = defaultTimeToOff
 
 @rh.touch.A.press()
 def touch_a(channel):
-    global currentStat
+    global currentStat, remainingTime, defaultTimeToOff
     #print("Button A touched!")
     currentStat = Screen.TEMP
+    remainingTime = defaultTimeToOff
 
 @rh.touch.B.press()
 def touch_b(channel):
-    global currentStat
+    global currentStat, remainingTime, defaultTimeToOff
     #print("Button B touched!")
     currentStat = Screen.LOAD
+    remainingTime = defaultTimeToOff
 
 @rh.touch.C.press()
 def touch_c(channel):
-    global currentStat
+    global currentStat, remainingTime, defaultTimeToOff
     #print("Button C touched!")
     currentStat = Screen.OFF
+    remainingTime = defaultTimeToOff
 
 
 def show_graph(v, r, g, b):
@@ -62,6 +67,11 @@ while True:
     load = round(CPUInfo.get_cpu_load() / 100.0, 4)
     
     #print_debug()
+
+    if remainingTime >= 0:
+        remainingTime = remainingTime - 1
+    if remainingTime == 0:
+        currentStat = Screen.OFF
 
     if currentStat == Screen.TEMP:
         show_graph(temp, Util.lerp(0, 255, temp), Util.lerp(255, 0, temp), 0)
