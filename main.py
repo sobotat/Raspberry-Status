@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 import time
 import rainbowhat as rh
-from . import util, cpu
-from .screen import Screen
+import util, cpu
+from screen import Screen
 
 rh.rainbow.set_clear_on_exit()
 
