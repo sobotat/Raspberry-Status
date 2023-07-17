@@ -68,7 +68,8 @@ while True:
         rh.lights.rgb(0, 1, 0)
     else:
         show_graph(0, 0, 0, 0)
-        rh.display.clear()
+        rh.display.print_str('')
+        rh.display.show()
         rh.lights.rgb(0, 0, 1)
 
     time.sleep(1)
