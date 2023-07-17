@@ -46,7 +46,8 @@ def show_graph(v, r, g, b):
     rh.rainbow.show()
 
 def display_message(message):
-    rh.display.print_str(message)
+    rh.display.clear()
+    rh.display.print_decimal(message)
     rh.display.show()
 
 rh.rainbow.set_brightness(0.1)
@@ -59,15 +60,15 @@ while True:
 
     if currentStat == Screen.TEMP:
         show_graph(temp, Util.lerp(0, 255, temp), Util.lerp(255, 0, temp), 0)
-        display_message(str(temp))
+        display_message(int(temp * 100))
         rh.lights.rgb(1, 0, 0)
     elif currentStat == Screen.LOAD:
         show_graph(load, Util.lerp(0, 255, load), Util.lerp(255, 0, load), 0)
-        display_message(str(load))
+        display_message(int(load * 100))
         rh.lights.rgb(0, 1, 0)
     else:
         show_graph(0, 0, 0, 0)
-        display_message('')
+        rh.display.clear()
         rh.lights.rgb(0, 0, 1)
 
     time.sleep(1)
