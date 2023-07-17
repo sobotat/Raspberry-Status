@@ -1,11 +1,20 @@
 #!/usr/bin/env python
 import time
+import sys
 import rainbowhat as rh
 from cpu import CPUInfo
 from util import Util
 from enum import Enum
 
 rh.rainbow.set_clear_on_exit()
+
+debug = False
+
+if len(sys.argv) > 0:
+    try:
+        debug = bool(sys.argv[0])
+    except:
+        print('Invalid Argument')
 
 class Screen(Enum):
     OFF = 1
@@ -52,11 +61,15 @@ def display_message(message):
 
 rh.rainbow.set_brightness(0.1)
 
+def print_debug():
+    print(f"TEMP {temp * 100}, LOAD {load * 100}, MODE {currentStat}")
+
 while True:
     temp = round(CPUInfo.get_cpu_temperature() / 100.0, 4)
     load = round(CPUInfo.get_cpu_load() / 100.0, 4)
-
-    print(f"TEMP {temp * 100}, LOAD {load * 100}, MODE {currentStat}")
+    
+    if debug:
+        print_debug()
 
     if currentStat == Screen.TEMP:
         show_graph(temp, Util.lerp(0, 255, temp), Util.lerp(255, 0, temp), 0)
