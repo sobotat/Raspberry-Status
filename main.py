@@ -59,11 +59,11 @@ while True:
 
     if currentStat == Screen.TEMP:
         show_graph(temp, Util.lerp(0, 255, temp), Util.lerp(255, 0, temp), 0)
-        display_message(temp)
+        display_message(str(temp))
         rh.lights.rgb(1, 0, 0)
     elif currentStat == Screen.LOAD:
         show_graph(load, Util.lerp(0, 255, load), Util.lerp(255, 0, load), 0)
-        display_message(load)
+        display_message(str(load))
         rh.lights.rgb(0, 1, 0)
     else:
         show_graph(0, 0, 0, 0)
