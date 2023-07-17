@@ -67,6 +67,8 @@ rh.rainbow.set_brightness(0.1)
 def print_debug():
     print(f"TEMP {temp * 100}, LOAD {load * 100}, MODE {currentStat}")
 
+
+print('Raspberry-Status started ...')
 while True:
     temp = round(CPUInfo.get_cpu_temperature() / 100.0, 4)
     load = round(CPUInfo.get_cpu_load() / 100.0, 4)
