@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 import time
 import rainbowhat as rh
-import cpu, util
+from cpu import CPUInfo
+from util import Util
 from enum import Enum
 
 rh.rainbow.set_clear_on_exit()
@@ -51,17 +52,17 @@ def display_message(message):
 rh.rainbow.set_brightness(0.1)
 
 while True:
-    temp = round(cpu.get_cpu_temperature() / 100.0, 2)
-    load = round(cpu.get_cpu_load() / 100.0, 2)
+    temp = round(CPUInfo.get_cpu_temperature() / 100.0, 2)
+    load = round(CPUInfo.get_cpu_load() / 100.0, 2)
 
     print(f"TEMP {temp * 100}, LOAD {load * 100}, MODE {currentStat}")
 
     if currentStat == Screen.TEMP:
-        show_graph(temp, util.lerp(0, 255, temp), util.lerp(255, 0, temp), 0)
+        show_graph(temp, Util.lerp(0, 255, temp), Util.lerp(255, 0, temp), 0)
         display_message(temp + 'C')
         rh.lights.rgb(1, 0, 0)
     elif currentStat == Screen.LOAD:
-        show_graph(load, util.lerp(0, 255, load), util.lerp(255, 0, load), 0)
+        show_graph(load, Util.lerp(0, 255, load), Util.lerp(255, 0, load), 0)
         display_message(load + '%')
         rh.lights.rgb(0, 1, 0)
     else:
