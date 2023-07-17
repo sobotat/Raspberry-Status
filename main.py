@@ -25,20 +25,23 @@ currentStat = Screen.TEMP
 
 @rh.touch.A.press()
 def touch_a(channel):
-    global currentStat
-    print("Button A touched!")
+    global currentStat, debug
+    if debug:
+        print("Button A touched!")
     currentStat = Screen.TEMP
 
 @rh.touch.B.press()
 def touch_b(channel):
-    global currentStat
-    print("Button B touched!")
+    global currentStat, debug
+    if debug:
+        print("Button B touched!")
     currentStat = Screen.LOAD
 
 @rh.touch.C.press()
 def touch_c(channel):
-    global currentStat
-    print("Button C touched!")
+    global currentStat, debug
+    if debug:
+        print("Button C touched!")
     currentStat = Screen.OFF
 
 
