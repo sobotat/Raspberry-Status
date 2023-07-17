@@ -17,19 +17,19 @@ currentStat = Screen.TEMP
 @rh.touch.A.press()
 def touch_a(channel):
     global currentStat
-    print("Button A touched!")
+    #print("Button A touched!")
     currentStat = Screen.TEMP
 
 @rh.touch.B.press()
 def touch_b(channel):
     global currentStat
-    print("Button B touched!")
+    #print("Button B touched!")
     currentStat = Screen.LOAD
 
 @rh.touch.C.press()
 def touch_c(channel):
     global currentStat
-    print("Button C touched!")
+    #print("Button C touched!")
     currentStat = Screen.OFF
 
 
@@ -61,7 +61,7 @@ while True:
     temp = round(CPUInfo.get_cpu_temperature() / 100.0, 4)
     load = round(CPUInfo.get_cpu_load() / 100.0, 4)
     
-    print_debug()
+    #print_debug()
 
     if currentStat == Screen.TEMP:
         show_graph(temp, Util.lerp(0, 255, temp), Util.lerp(255, 0, temp), 0)
