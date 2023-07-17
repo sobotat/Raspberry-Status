@@ -1,30 +1,29 @@
 #!/usr/bin/env python
 import time
 import rainbowhat as rh
-import util, cpu
-from screen import Screen
+import util, cpu, screen
 
 rh.rainbow.set_clear_on_exit()
 
-currentStat = Screen.TEMP
+currentStat = screen.Screen.TEMP
 
 @rh.touch.A.press()
 def touch_a(channel):
     global currentStat
     print("Button A touched!")
-    currentStat = Screen.TEMP
+    currentStat = screen.Screen.TEMP
 
 @rh.touch.B.press()
 def touch_b(channel):
     global currentStat
     print("Button B touched!")
-    currentStat = Screen.LOAD
+    currentStat = screen.Screen.LOAD
 
 @rh.touch.C.press()
 def touch_c(channel):
     global currentStat
     print("Button C touched!")
-    currentStat = Screen.OFF
+    currentStat = screen.Screen.OFF
 
 
 def show_graph(v, r, g, b):
@@ -51,11 +50,11 @@ while True:
 
     print(f"TEMP {temp * 100}, LOAD {load * 100}, MODE {currentStat}")
 
-    if currentStat == Screen.TEMP:
+    if currentStat == screen.Screen.TEMP:
         show_graph(temp, util.lerp(0, 255, temp), util.lerp(255, 0, temp), 0)
         display_message(temp + 'C')
         rh.lights.rgb(1, 0, 0)
-    elif currentStat == Screen.LOAD:
+    elif currentStat == screen.Screen.LOAD:
         show_graph(load, util.lerp(0, 255, load), util.lerp(255, 0, load), 0)
         display_message(load + '%')
         rh.lights.rgb(0, 1, 0)
