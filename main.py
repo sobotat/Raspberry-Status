@@ -53,8 +53,8 @@ def display_message(message):
 rh.rainbow.set_brightness(0.1)
 
 while True:
-    temp = round(CPUInfo.get_cpu_temperature() / 100.0, 2)
-    load = round(CPUInfo.get_cpu_load() / 100.0, 2)
+    temp = round(CPUInfo.get_cpu_temperature() / 100.0, 4)
+    load = round(CPUInfo.get_cpu_load() / 100.0, 4)
 
     print(f"TEMP {temp * 100}, LOAD {load * 100}, MODE {currentStat}")
 
