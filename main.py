@@ -47,7 +47,7 @@ def show_graph(v, r, g, b):
 
 def display_message(message):
     rh.display.clear()
-    rh.display.print_decimal(message)
+    rh.display.print_float(message)
     rh.display.show()
 
 rh.rainbow.set_brightness(0.1)
