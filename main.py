@@ -20,21 +20,18 @@ remainingTime = defaultTimeToOff
 @rh.touch.A.press()
 def touch_a(channel):
     global currentStat, remainingTime, defaultTimeToOff
-    #print("Button A touched!")
     currentStat = Screen.TEMP
     remainingTime = defaultTimeToOff
 
 @rh.touch.B.press()
 def touch_b(channel):
     global currentStat, remainingTime, defaultTimeToOff
-    #print("Button B touched!")
     currentStat = Screen.LOAD
     remainingTime = defaultTimeToOff
 
 @rh.touch.C.press()
 def touch_c(channel):
     global currentStat, remainingTime, defaultTimeToOff
-    #print("Button C touched!")
     currentStat = Screen.OFF
     remainingTime = 0
 
@@ -56,7 +53,7 @@ def display_message(message):
     rh.display.print_float(message)
     rh.display.show()
 
-rh.rainbow.set_brightness(0.1)
+rh.rainbow.set_brightness(0.5)
 
 print('Raspberry-Status started ...')
 while True:
@@ -82,9 +79,9 @@ while True:
         rh.display.show()
         
         currentHour = int(datetime.now().strftime("%H"))
-        if currentHour > 6 or currentHour <= 20:
+        if currentHour > 6 and currentHour <= 20:
             rh.lights.rgb(0, 0, 1)
         else:
-            rh.lights.rgb(0, 0, 0.1)
+            rh.lights.rgb(0, 0, 0)
 
     time.sleep(1)
