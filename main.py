@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 import time
+from datetime import datetime
 import rainbowhat as rh
 from cpu import CPUInfo
 from util import Util
@@ -35,7 +36,7 @@ def touch_c(channel):
     global currentStat, remainingTime, defaultTimeToOff
     #print("Button C touched!")
     currentStat = Screen.OFF
-    remainingTime = defaultTimeToOff
+    remainingTime = 0
 
 
 def show_graph(v, r, g, b):
@@ -57,17 +58,9 @@ def display_message(message):
 
 rh.rainbow.set_brightness(0.1)
 
-def print_debug():
-    print(f"TEMP {temp * 100}, LOAD {load * 100}, MODE {currentStat}")
-
-
 print('Raspberry-Status started ...')
 while True:
-    temp = round(CPUInfo.get_cpu_temperature() / 100.0, 4)
-    load = round(CPUInfo.get_cpu_load() / 100.0, 4)
     
-    #print_debug()
-
     if remainingTime >= 0:
         remainingTime = remainingTime - 1
     if remainingTime == 0:
@@ -78,6 +71,8 @@ while True:
         display_message(temp * 100)
         rh.lights.rgb(1, 0, 0)
     elif currentStat == Screen.LOAD:
+        temp = round(CPUInfo.get_cpu_temperature() / 100.0, 4)
+        load = round(CPUInfo.get_cpu_load() / 100.0, 4)
         show_graph(load, Util.lerp(0, 255, load), Util.lerp(255, 0, load), 0)
         display_message(load * 100)
         rh.lights.rgb(0, 1, 0)
@@ -85,6 +80,11 @@ while True:
         show_graph(0, 0, 0, 0)
         rh.display.clear()
         rh.display.show()
-        rh.lights.rgb(0, 0, 1)
+        
+        currentHour = int(datetime.now().strftime("%H"))
+        if currentHour > 6 or currentHour <= 20:
+            rh.lights.rgb(0, 0, 1)
+        else:
+            rh.lights.rgb(0, 0, 0.1)
 
     time.sleep(1)
