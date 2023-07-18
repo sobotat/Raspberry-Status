@@ -67,11 +67,11 @@ while True:
         currentStat = Screen.OFF
 
     if currentStat == Screen.TEMP:
+        temp = round(CPUInfo.get_cpu_temperature() / 100.0, 4)
         show_graph(temp, Util.lerp(0, 255, temp), Util.lerp(255, 0, temp), 0)
         display_message(temp * 100)
         rh.lights.rgb(1, 0, 0)
     elif currentStat == Screen.LOAD:
-        temp = round(CPUInfo.get_cpu_temperature() / 100.0, 4)
         load = round(CPUInfo.get_cpu_load() / 100.0, 4)
         show_graph(load, Util.lerp(0, 255, load), Util.lerp(255, 0, load), 0)
         display_message(load * 100)
