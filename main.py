@@ -1,11 +1,13 @@
 #!/usr/bin/env python
 import time
 from datetime import datetime
+import atexit
 import rainbowhat as rh
-from cpu import CPUInfo
-from util import Util
+from lib.cpu import CPUInfo
+from lib.util import Util
 from enum import Enum
 from logger import Logger, Level
+
 
 rh.rainbow.set_clear_on_exit()
 
@@ -107,3 +109,15 @@ try:
 
 except Exception as e:
     logger.log(str(e))
+
+
+def exit_handler():
+    logger.log(Level.Info, 'Application Exiting ...')
+
+    rh.rainbow.clear()
+    rh.rainbow.show()
+    rh.display.clear()
+    rh.display.show()
+    rh.lights.rgb(0, 0, 0)
+
+    logger.log(Level.Info, 'Application Exited ...')
