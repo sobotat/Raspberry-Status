@@ -15,7 +15,7 @@ def kill_handler(signal, frame):
     sys.exit(1)
 
 def exit_handler():
-    logger.log(Level.Info, 'Application Exiting ...')
+    logger.log(Level.Info, 'Raspberry-Status exiting ...')
 
     rh.rainbow.clear()
     rh.rainbow.show()
@@ -23,7 +23,7 @@ def exit_handler():
     rh.display.show()
     rh.lights.rgb(0, 0, 0)
 
-    logger.log(Level.Info, 'Application Exited ...')
+    logger.log(Level.Info, 'Raspberry-Status exited ...')
 
 
 
