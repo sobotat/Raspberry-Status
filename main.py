@@ -2,12 +2,13 @@
 import time
 from datetime import datetime
 import atexit
+import signal
+import sys
 import rainbowhat as rh
 from lib.cpu import CPUInfo
 from lib.util import Util
 from enum import Enum
 from logger import Logger, Level
-
 
 rh.rainbow.set_clear_on_exit()
 
@@ -22,6 +23,7 @@ Logger.logToFile = True
 Logger.fileName = 'output.log'
 logger = Logger('Main')
 
+signal.signal(signal.SIGTERM, kill_handler)
 currentStat = Screen.TEMP
 defaultTimeToOff = 10
 remainingTime = defaultTimeToOff
@@ -110,6 +112,9 @@ try:
 except Exception as e:
     logger.log(str(e))
 
+def kill_handler():
+    exit_handler()
+    sys.exit(1)
 
 def exit_handler():
     logger.log(Level.Info, 'Application Exiting ...')
