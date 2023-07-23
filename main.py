@@ -10,7 +10,7 @@ from lib.util import Util
 from enum import Enum
 from logger import Logger, Level
 
-def kill_handler():
+def kill_handler(signal, frame):
     exit_handler()
     sys.exit(1)
 
@@ -126,4 +126,5 @@ try:
 
 except Exception as e:
     logger.log(str(e))
-    kill_handler()
+    exit_handler()
+    sys.exit(2)
