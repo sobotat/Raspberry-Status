@@ -10,7 +10,22 @@ from lib.util import Util
 from enum import Enum
 from logger import Logger, Level
 
-rh.rainbow.set_clear_on_exit()
+def kill_handler():
+    exit_handler()
+    sys.exit(1)
+
+def exit_handler():
+    logger.log(Level.Info, 'Application Exiting ...')
+
+    rh.rainbow.clear()
+    rh.rainbow.show()
+    rh.display.clear()
+    rh.display.show()
+    rh.lights.rgb(0, 0, 0)
+
+    logger.log(Level.Info, 'Application Exited ...')
+
+
 
 class Screen(Enum):
     OFF = 1
@@ -111,18 +126,4 @@ try:
 
 except Exception as e:
     logger.log(str(e))
-
-def kill_handler():
-    exit_handler()
-    sys.exit(1)
-
-def exit_handler():
-    logger.log(Level.Info, 'Application Exiting ...')
-
-    rh.rainbow.clear()
-    rh.rainbow.show()
-    rh.display.clear()
-    rh.display.show()
-    rh.lights.rgb(0, 0, 0)
-
-    logger.log(Level.Info, 'Application Exited ...')
+    kill_handler()
