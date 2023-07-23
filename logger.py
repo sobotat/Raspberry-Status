@@ -22,12 +22,15 @@ class Logger:
         self.className = className
 
     def log(self, level:Level, message:str):
-        message = str(datetime.now()) + f' [{level}] ' + f'[{threading.currentThread().getName()}] ' + f'[{self.className}] > ' + message
+        message = self.__getLogText(level, message, datetime.now(), threading.currentThread().getName())
 
         if self.logToConsole:
             print(message)
         if self.logToFile:
             self.__logToFile(message)
+
+    def __getLogText(self, level:Level, message:str, date:datetime, threadName:str) -> str:
+        return str(date) + f' [{level}] ' + f'[{threading.currentThread().getName()}] ' + f'[{self.className}] > ' + message
 
     def __logToFile(self, message:str):
         
