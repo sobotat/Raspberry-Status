@@ -4,8 +4,8 @@ import threading
 import os
 
 class Level(Enum):
-    Error = 0,
-    Warn = 1,
+    Error = 0
+    Warn = 1
     Info = 2
 
     def __str__(self) -> str:
@@ -14,7 +14,9 @@ class Level(Enum):
 class Logger:
 
     logToConsole=True, 
+    logConsoleToLevel = Level.Info
     logToFile=False, 
+    logFileToLevel = Level.Info
     fileName='output.log'
     maxFileSizeInMB = 15
 
@@ -23,10 +25,10 @@ class Logger:
 
     def log(self, level:Level, message:str):
         message = self.__getLogText(level, message, datetime.now(), threading.currentThread().getName())
-
-        if self.logToConsole:
+        
+        if self.logToConsole and level.value <= self.logConsoleToLevel.value:
             print(message)
-        if self.logToFile:
+        if self.logToFile and level.value <= self.logFileToLevel.value:
             self.__logToFile(message)
 
     def __getLogText(self, level:Level, message:str, date:datetime, threadName:str) -> str:
