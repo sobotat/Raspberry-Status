@@ -5,6 +5,7 @@ import rainbowhat as rh
 from cpu import CPUInfo
 from util import Util
 from enum import Enum
+from logger import Logger, Level
 
 rh.rainbow.set_clear_on_exit()
 
@@ -13,27 +14,37 @@ class Screen(Enum):
     TEMP = 2
     LOAD = 3
 
+#Logger Setup
+Logger.logToConsole = False
+Logger.logToFile = True
+Logger.fileName = 'output.log'
+logger = Logger('Main')
+
 currentStat = Screen.TEMP
 defaultTimeToOff = 10
 remainingTime = defaultTimeToOff
+nightMode = int(datetime.now().strftime("%H")) > 6 and int(datetime.now().strftime("%H")) <= 20
 
 @rh.touch.A.press()
 def touch_a(channel):
-    global currentStat, remainingTime, defaultTimeToOff
+    global currentStat, remainingTime, defaultTimeToOff, logger
     currentStat = Screen.TEMP
     remainingTime = defaultTimeToOff
+    logger.log(Level.Info, 'Screen changed to Temp')
 
 @rh.touch.B.press()
 def touch_b(channel):
     global currentStat, remainingTime, defaultTimeToOff
     currentStat = Screen.LOAD
     remainingTime = defaultTimeToOff
+    logger.log(Level.Info, 'Screen changed to CPU Load')
 
 @rh.touch.C.press()
 def touch_c(channel):
     global currentStat, remainingTime, defaultTimeToOff
     currentStat = Screen.OFF
     remainingTime = 0
+    logger.log(Level.Info, 'Screen turned Off')
 
 
 def show_graph(v, r, g, b):
@@ -55,33 +66,44 @@ def display_message(message):
 
 rh.rainbow.set_brightness(0.5)
 
-print('Raspberry-Status started ...')
-while True:
-    
-    if remainingTime >= 0:
-        remainingTime = remainingTime - 1
-    if remainingTime == 0:
-        currentStat = Screen.OFF
-
-    if currentStat == Screen.TEMP:
-        temp = round(CPUInfo.get_cpu_temperature() / 100.0, 4)
-        show_graph(temp, Util.lerp(0, 255, temp), Util.lerp(255, 0, temp), 0)
-        display_message(temp * 100)
-        rh.lights.rgb(1, 0, 0)
-    elif currentStat == Screen.LOAD:
-        load = round(CPUInfo.get_cpu_load() / 100.0, 4)
-        show_graph(load, Util.lerp(0, 255, load), Util.lerp(255, 0, load), 0)
-        display_message(load * 100)
-        rh.lights.rgb(0, 1, 0)
-    else:
-        show_graph(0, 0, 0, 0)
-        rh.display.clear()
-        rh.display.show()
+logger.log(Level.Info, 'Raspberry-Status started ...')
+try:
+    while True:
         
-        currentHour = int(datetime.now().strftime("%H"))
-        if currentHour > 6 and currentHour <= 20:
-            rh.lights.rgb(0, 0, 1)
-        else:
-            rh.lights.rgb(0, 0, 0)
+        if remainingTime >= 0:
+            remainingTime = remainingTime - 1
+        if remainingTime == 0:
+            currentStat = Screen.OFF
 
-    time.sleep(1)
+        if currentStat == Screen.TEMP:
+            temp = round(CPUInfo.get_cpu_temperature() / 100.0, 4)
+            show_graph(temp, Util.lerp(0, 255, temp), Util.lerp(255, 0, temp), 0)
+            display_message(temp * 100)
+            rh.lights.rgb(1, 0, 0)
+        elif currentStat == Screen.LOAD:
+            load = round(CPUInfo.get_cpu_load() / 100.0, 4)
+            show_graph(load, Util.lerp(0, 255, load), Util.lerp(255, 0, load), 0)
+            display_message(load * 100)
+            rh.lights.rgb(0, 1, 0)
+        else:
+            show_graph(0, 0, 0, 0)
+            rh.display.clear()
+            rh.display.show()
+            
+            currentHour = int(datetime.now().strftime("%H"))
+            if nightMode and currentHour > 6 and currentHour <= 20:
+                nightMode = False
+                logger.log(Level.Info, 'Switching to DayMode')
+            elif not nightMode and not(currentHour > 6 and currentHour <= 20):
+                nightMode = True
+                logger.log(Level.Info, 'Switching to NightMode')
+
+            if not nightMode:
+                rh.lights.rgb(0, 0, 1)
+            else:
+                rh.lights.rgb(0, 0, 0)
+
+        time.sleep(1)
+
+except Exception as e:
+    logger.log(str(e))
