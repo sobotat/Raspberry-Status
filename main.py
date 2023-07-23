@@ -34,14 +34,14 @@ def touch_a(channel):
 
 @rh.touch.B.press()
 def touch_b(channel):
-    global currentStat, remainingTime, defaultTimeToOff
+    global currentStat, remainingTime, defaultTimeToOff, logger
     currentStat = Screen.LOAD
     remainingTime = defaultTimeToOff
     logger.log(Level.Info, 'Screen changed to CPU Load')
 
 @rh.touch.C.press()
 def touch_c(channel):
-    global currentStat, remainingTime, defaultTimeToOff
+    global currentStat, remainingTime, defaultTimeToOff, logger
     currentStat = Screen.OFF
     remainingTime = 0
     logger.log(Level.Info, 'Screen turned Off')
