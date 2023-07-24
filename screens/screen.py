@@ -3,7 +3,7 @@ from abc import ABC, abstractmethod
 class Screen(ABC):
 
     @abstractmethod
-    def update(self, daltaTime):
+    def update(self, deltaTime):
         pass
 
     @abstractmethod

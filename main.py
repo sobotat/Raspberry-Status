@@ -52,9 +52,9 @@ def changeScreen(newScreen:Screen):
     currentScreen = newScreen
     currentScreen.activated()
 
-def resetTimeToOff():
+def resetTimeToOff(multiplier=1):
     global remainingTime, defaultTimeToOff
-    remainingTime = defaultTimeToOff
+    remainingTime = defaultTimeToOff * multiplier
 
 @rh.touch.A.press()
 def touch_a(channel):
@@ -72,7 +72,7 @@ def touch_b(channel):
 def touch_c(channel):
     global netScreen
     changeScreen(netScreen)
-    resetTimeToOff()
+    resetTimeToOff(multiplier=4)
 
 #---------------------------------------------------------------------------------------------
 
