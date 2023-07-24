@@ -13,7 +13,7 @@ class OffScreen(Screen):
 
         self.nightMode = self.isDay()
 
-    def update(self):
+    def update(self, deltaTime):
         if self.nightMode and self.isDay():
             self.nightMode = False
             self.logger.log(Level.Info, 'Switching to DayMode')
