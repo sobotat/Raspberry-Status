@@ -29,7 +29,7 @@ Logger.fileName = 'output.log'
 logger = Logger('Main')
 
 #Kill signal
-signal.signal(signal.SIGTERM, kill_handler)
+#signal.signal(signal.SIGTERM, kill_handler)
 
 #Screens
 tempScreen = TempScreen()
