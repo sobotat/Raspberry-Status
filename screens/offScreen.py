@@ -5,21 +5,21 @@ from datetime import datetime
 
 class OffScreen(Screen):
     
-    def __init__(self) -> None:
+    def __init__(self, dayStartAt:int = 6, dayEndAt:int = 20) -> None:
         super().__init__()
         self.logger = Logger('OffScreen')
+        self.dayStartAt = dayStartAt
+        self.dayEndAt = dayEndAt
 
-        currentHour = int(datetime.now().strftime("%H"))
-        self.nightMode = (currentHour > 6 and currentHour <= 20)
+        self.nightMode = self.isDay()
 
     def update(self):
-        currentHour = int(datetime.now().strftime("%H"))
-        if self.nightMode and currentHour > 6 and currentHour <= 20:
+        if self.nightMode and self.isDay():
             self.nightMode = False
-            self.logger.log(Level.Warn, 'Switching to DayMode')
-        elif not self.nightMode and not(currentHour > 6 and currentHour <= 20):
+            self.logger.log(Level.Info, 'Switching to DayMode')
+        elif not self.nightMode and not(self.isDay()):
             self.nightMode = True
-            self.logger.log(Level.Warn, 'Switching to NightMode')        
+            self.logger.log(Level.Info, 'Switching to NightMode')        
 
         if not self.nightMode:
             RainbowHatUtil.show_rgb(0, 0, 1)
@@ -32,3 +32,7 @@ class OffScreen(Screen):
     
     def deactivated(self):
         self.logger.log(Level.Warn, 'Off Screen Deactivated')
+
+    def isDay(self):
+        currentHour = int(datetime.now().strftime("%H"))
+        return currentHour > self.dayStartAt and currentHour < self.dayEndAt

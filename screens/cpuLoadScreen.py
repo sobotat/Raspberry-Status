@@ -10,7 +10,7 @@ class CPULoadScreen(Screen):
         super().__init__()
         self.logger = Logger('CPULoadScreen')
 
-    def update(self):
+    def update(self, daltaTime):
         load = round(CPUInfo.get_cpu_load() / 100.0, 4)
 
         RainbowHatUtil.show_graph(load, Util.lerp(0, 255, load), Util.lerp(255, 0, load), 0)

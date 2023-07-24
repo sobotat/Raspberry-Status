@@ -10,7 +10,7 @@ class TempScreen(Screen):
         super().__init__()
         self.logger = Logger('TempScreen')
 
-    def update(self):
+    def update(self, deltaTime):
         temp = round(CPUInfo.get_cpu_temperature() / 100.0, 4)
 
         RainbowHatUtil.show_graph(temp, Util.lerp(0, 255, temp), Util.lerp(255, 0, temp), 0)

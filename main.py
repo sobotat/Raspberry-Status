@@ -7,6 +7,7 @@ from screens.screen import Screen
 from screens.tempScreen import TempScreen
 from screens.cpuLoadScreen import CPULoadScreen
 from screens.offScreen import OffScreen
+from screens.netScreen import NetScreen
 
 
 def kill_handler(signal, frame):
@@ -33,12 +34,14 @@ signal.signal(signal.SIGTERM, kill_handler)
 #Screens
 tempScreen = TempScreen()
 cpuLoadScreen = CPULoadScreen()
+netScreen = NetScreen()
 offScreen = OffScreen()
 
 currentScreen:Screen = tempScreen
 
 #Default Time to turn off
-defaultTimeToOff = 10
+sleepTime = 0.5
+defaultTimeToOff = 10 / sleepTime
 remainingTime = defaultTimeToOff
 
 #---------------------------------------------------------------------------------------------
@@ -49,23 +52,27 @@ def changeScreen(newScreen:Screen):
     currentScreen = newScreen
     currentScreen.activated()
 
+def resetTimeToOff():
+    global remainingTime, defaultTimeToOff
+    remainingTime = defaultTimeToOff
+
 @rh.touch.A.press()
 def touch_a(channel):
-    global tempScreen, remainingTime, defaultTimeToOff
+    global tempScreen
     changeScreen(tempScreen)
-    remainingTime = defaultTimeToOff
+    resetTimeToOff()
 
 @rh.touch.B.press()
 def touch_b(channel):
-    global cpuLoadScreen, remainingTime, defaultTimeToOff, logger
+    global cpuLoadScreen
     changeScreen(cpuLoadScreen)
-    remainingTime = defaultTimeToOff
+    resetTimeToOff()
 
 @rh.touch.C.press()
 def touch_c(channel):
-    global offScreen, remainingTime, defaultTimeToOff, logger
-    changeScreen(offScreen)
-    remainingTime = 0
+    global offScreen
+    changeScreen(NetScreen)
+    resetTimeToOff()
 
 #---------------------------------------------------------------------------------------------
 
@@ -78,9 +85,9 @@ try:
         if remainingTime == 0:
             changeScreen(offScreen)
 
-        currentScreen.update()
+        currentScreen.update(sleepTime)
 
-        time.sleep(1)
+        time.sleep(sleepTime)
 
 except Exception as e:
     logger.log(str(e))
