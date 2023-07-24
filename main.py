@@ -24,7 +24,7 @@ def exit_handler():
 
 #Logger Setup
 Logger.logConsoleToLevel = Level.Off
-Logger.logFileToLevel = Level.Info
+Logger.logFileToLevel = Level.All
 Logger.fileName = 'output.log'
 logger = Logger('Main')
 
@@ -90,5 +90,5 @@ try:
         time.sleep(sleepTime)
 
 except Exception as e:
-    logger.log(Level.Error, str(e.with_traceback()))
+    logger.log(Level.Error, str(e))
     sys.exit(2)
