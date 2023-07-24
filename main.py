@@ -15,14 +15,14 @@ def kill_handler(signal, frame):
 
 @atexit.register
 def exit_handler():
-    logger.log(Level.Warn, 'Raspberry-Status exiting ...')
+    logger.log(Level.Info, 'Raspberry-Status exiting ...')
     RainbowHatUtil.clear()
-    logger.log(Level.Warn, 'Raspberry-Status exited ...')
+    logger.log(Level.Info, 'Raspberry-Status exited ...')
 
 #---------------------------------------------------------------------------------------------
 
 #Logger Setup
-Logger.logFileToLevel = Level.Info
+Logger.logConsoleToLevel = Level.Off
 Logger.logFileToLevel = Level.Info
 Logger.fileName = 'output.log'
 logger = Logger('Main')
@@ -69,7 +69,7 @@ def touch_c(channel):
 
 #---------------------------------------------------------------------------------------------
 
-logger.log(Level.Warn, 'Raspberry-Status started ...')
+logger.log(Level.Info, 'Raspberry-Status started ...')
 try:
     while True:
         
