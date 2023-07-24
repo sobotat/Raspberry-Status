@@ -8,7 +8,7 @@ class NetInfo:
     def getSpeedAndUnit(bytes) -> tuple[int, str]:
         for unit in ['', 'K', 'M', 'G', 'T', 'P']:
             if bytes < 1024:
-                return (bytes:.2f, f"{unit}B")
+                return (bytes, f"{unit}B")
             bytes /= 1024
 
     def getUpload() -> tuple[int, str]:
