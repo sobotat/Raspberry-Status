@@ -29,7 +29,7 @@ Logger.fileName = 'output.log'
 logger = Logger('Main')
 
 #Kill signal
-#signal.signal(signal.SIGTERM, kill_handler)
+signal.signal(signal.SIGTERM, kill_handler)
 
 #Screens
 tempScreen = TempScreen()
@@ -91,5 +91,4 @@ try:
 
 except Exception as e:
     logger.log(Level.Error, str(e))
-    exit_handler()
     sys.exit(2)
