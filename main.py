@@ -90,6 +90,6 @@ try:
         time.sleep(sleepTime)
 
 except Exception as e:
-    logger.log(str(e))
+    logger.log(Level.Error, str(e))
     exit_handler()
     sys.exit(2)
