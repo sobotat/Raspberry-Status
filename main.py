@@ -70,8 +70,8 @@ def touch_b(channel):
 
 @rh.touch.C.press()
 def touch_c(channel):
-    global offScreen
-    changeScreen(NetScreen)
+    global netScreen
+    changeScreen(netScreen)
     resetTimeToOff()
 
 #---------------------------------------------------------------------------------------------
