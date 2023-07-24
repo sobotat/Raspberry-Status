@@ -23,5 +23,5 @@ class RainbowHatUtil:
 
     def clear():
         RainbowHatUtil.show_graph(0, 0, 0, 0)
-        rh.clear()
-        rh.show()
+        rh.display.clear()
+        rh.display.show()
