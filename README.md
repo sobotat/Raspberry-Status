@@ -6,10 +6,12 @@
 
 #### Run in background
 ```bash
+    chmod u+x run.bash
     ./run.bash
 ```
 
 #### Turn Off
 ```bash
+    chmod u+x kill.bash
     ./kill.bash
 ```

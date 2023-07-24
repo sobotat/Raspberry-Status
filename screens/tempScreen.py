@@ -1,4 +1,4 @@
-from screen import Screen
+from screens.screen import Screen
 from lib.rainbowHatUtil import RainbowHatUtil
 from lib.logger import Logger, Level
 from lib.cpu import CPUInfo
