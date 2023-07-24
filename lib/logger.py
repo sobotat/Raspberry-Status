@@ -1,22 +1,24 @@
 from enum import Enum
 from datetime import datetime
 import threading
-import os
+import os, sys
 
 class Level(Enum):
-    Error = 0
-    Warn = 1
-    Info = 2
+    Off = 0
+    Error = 1
+    Warn = 2
+    Info = 3
+    Debug = 4
+    Trace = 5
+    All = 6
 
     def __str__(self) -> str:
-        return super().__str__().split('.')[1]
+        return super().name
 
 class Logger:
 
-    logToConsole=True, 
     logConsoleToLevel = Level.Info
-    logToFile=False, 
-    logFileToLevel = Level.Info
+    logFileToLevel = Level.Off
     fileName='output.log'
     maxFileSizeInMB = 15
 
@@ -26,9 +28,9 @@ class Logger:
     def log(self, level:Level, message:str):
         message = self.__getLogText(level, message, datetime.now(), threading.currentThread().getName())
         
-        if self.logToConsole and level.value <= self.logConsoleToLevel.value:
+        if level.value <= self.logConsoleToLevel.value:
             print(message)
-        if self.logToFile and level.value <= self.logFileToLevel.value:
+        if level.value <= self.logFileToLevel.value:
             self.__logToFile(message)
 
     def __getLogText(self, level:Level, message:str, date:datetime, threadName:str) -> str:
@@ -37,10 +39,12 @@ class Logger:
     def __logToFile(self, message:str):
         
         try:
-            appPath = f"{os.path.dirname(os.path.abspath(__file__))}"
+            appPath = Logger.__getPathToRoot()
             fileSize = os.stat(appPath + '\\' + self.fileName).st_size / (1024 * 1024)
             if fileSize >= self.maxFileSizeInMB:
                 self.__clearLogFile()
+        except FileNotFoundError:
+            pass
         except Exception as e:
             print('Clearing File Error: ', str(e))
 
@@ -62,3 +66,6 @@ class Logger:
         for line in lines:
             file.write(line)
         file.close()
+
+    def __getPathToRoot() -> str:
+        return os.path.dirname(sys.modules['__main__'].__file__)

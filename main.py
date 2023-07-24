@@ -1,40 +1,28 @@
 #!/usr/bin/env python
-import time
-from datetime import datetime
-import atexit
-import signal
-import sys
+import time, atexit, signal, sys
 import rainbowhat as rh
-from lib.cpu import CPUInfo
-from lib.util import Util
-from enum import Enum
-from logger import Logger, Level
+from lib.logger import Logger, Level
+from lib.rainbowHatUtil import RainbowHatUtil
+from screens.screen import Screen
+from screens.tempScreen import TempScreen
+from screens.cpuLoadScreen import CPULoadScreen
+from screens.offScreen import OffScreen
+
 
 def kill_handler(signal, frame):
     exit_handler()
     sys.exit(1)
 
+@atexit.register
 def exit_handler():
     logger.log(Level.Warn, 'Raspberry-Status exiting ...')
-
-    rh.rainbow.clear()
-    rh.rainbow.show()
-    rh.display.clear()
-    rh.display.show()
-    rh.lights.rgb(0, 0, 0)
-
+    RainbowHatUtil.clear()
     logger.log(Level.Warn, 'Raspberry-Status exited ...')
 
-
-
-class Screen(Enum):
-    OFF = 1
-    TEMP = 2
-    LOAD = 3
+#---------------------------------------------------------------------------------------------
 
 #Logger Setup
-Logger.logToConsole = False
-Logger.logToFile = True
+Logger.logFileToLevel = Level.Info
 Logger.logFileToLevel = Level.Info
 Logger.fileName = 'output.log'
 logger = Logger('Main')
@@ -42,52 +30,44 @@ logger = Logger('Main')
 #Kill signal
 signal.signal(signal.SIGTERM, kill_handler)
 
-#Global Vars
-currentStat = Screen.TEMP
+#Screens
+tempScreen = TempScreen()
+cpuLoadScreen = CPULoadScreen()
+offScreen = OffScreen()
+
+currentScreen:Screen = tempScreen
+
+#Default Time to turn off
 defaultTimeToOff = 10
 remainingTime = defaultTimeToOff
-nightMode = int(datetime.now().strftime("%H")) > 6 and int(datetime.now().strftime("%H")) <= 20
+
+#---------------------------------------------------------------------------------------------
+
+def changeScreen(newScreen:Screen):
+    global currentScreen
+    currentScreen.deactivated()
+    currentScreen = newScreen
+    currentScreen.activated()
 
 @rh.touch.A.press()
 def touch_a(channel):
-    global currentStat, remainingTime, defaultTimeToOff, logger
-    currentStat = Screen.TEMP
+    global tempScreen, remainingTime, defaultTimeToOff
+    changeScreen(tempScreen)
     remainingTime = defaultTimeToOff
-    logger.log(Level.Warn, 'Screen changed to Temp')
 
 @rh.touch.B.press()
 def touch_b(channel):
-    global currentStat, remainingTime, defaultTimeToOff, logger
-    currentStat = Screen.LOAD
+    global cpuLoadScreen, remainingTime, defaultTimeToOff, logger
+    changeScreen(cpuLoadScreen)
     remainingTime = defaultTimeToOff
-    logger.log(Level.Warn, 'Screen changed to CPU Load')
 
 @rh.touch.C.press()
 def touch_c(channel):
-    global currentStat, remainingTime, defaultTimeToOff, logger
-    currentStat = Screen.OFF
+    global offScreen, remainingTime, defaultTimeToOff, logger
+    changeScreen(offScreen)
     remainingTime = 0
-    logger.log(Level.Warn, 'Screen turned Off')
 
-
-def show_graph(v, r, g, b):
-    v *= rh.rainbow.NUM_PIXELS
-    for x in range(rh.rainbow.NUM_PIXELS):
-        if v < 0:
-            r, g, b = 0, 0, 0
-        else:
-            r, g, b = [int(min(v, 1.0) * c) for c in [r, g, b]]
-        rh.rainbow.set_pixel(x, r, g, b)
-        v -= 1
-
-    rh.rainbow.show()
-
-def display_message(message):
-    rh.display.clear()
-    rh.display.print_float(message)
-    rh.display.show()
-
-rh.rainbow.set_brightness(0.5)
+#---------------------------------------------------------------------------------------------
 
 logger.log(Level.Warn, 'Raspberry-Status started ...')
 try:
@@ -96,38 +76,9 @@ try:
         if remainingTime >= 0:
             remainingTime = remainingTime - 1
         if remainingTime == 0:
-            currentStat = Screen.OFF
+            changeScreen(offScreen)
 
-        temp = round(CPUInfo.get_cpu_temperature() / 100.0, 4)
-        load = round(CPUInfo.get_cpu_load() / 100.0, 4)
-
-        logger.log(Level.Info, f'T[{temp}], L[{load}]')
-
-        if currentStat == Screen.TEMP:
-            show_graph(temp, Util.lerp(0, 255, temp), Util.lerp(255, 0, temp), 0)
-            display_message(temp * 100)
-            rh.lights.rgb(1, 0, 0)
-        elif currentStat == Screen.LOAD:
-            show_graph(load, Util.lerp(0, 255, load), Util.lerp(255, 0, load), 0)
-            display_message(load * 100)
-            rh.lights.rgb(0, 1, 0)
-        else:
-            show_graph(0, 0, 0, 0)
-            rh.display.clear()
-            rh.display.show()
-            
-            currentHour = int(datetime.now().strftime("%H"))
-            if nightMode and currentHour > 6 and currentHour <= 20:
-                nightMode = False
-                logger.log(Level.Warn, 'Switching to DayMode')
-            elif not nightMode and not(currentHour > 6 and currentHour <= 20):
-                nightMode = True
-                logger.log(Level.Warn, 'Switching to NightMode')
-
-            if not nightMode:
-                rh.lights.rgb(0, 0, 1)
-            else:
-                rh.lights.rgb(0, 0, 0)
+        currentScreen.update()
 
         time.sleep(1)
 

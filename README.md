@@ -1,16 +1,15 @@
-## Small Script to show stats about CPU temp and load of raspberry with Rainbow Hat led board
+### Small Script to show stats about CPU temp and load of raspberry with Rainbow Hat led board
 
 - **Btn A** = Temp
 - **Btn B** = Load
 - **Btn C** = Off
 
-### Run in background
+#### Run in background
 ```bash
-    nohup sudo python -u main.py > "output.log" 2>&1 < /dev/null &
+    ./run.bash
 ```
 
-### Turn Off
-```
-    ps ax | grep main.py
-    kill pID
+#### Turn Off
+```bash
+    ./kill.bash
 ```
