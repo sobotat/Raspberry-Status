@@ -19,18 +19,18 @@ class NetScreen(Screen):
 
         self.lastUploadBytes = uploadSpeed[1]
         self.lastDownloadBytes = downloadSpeed[1]
-        uploadSpeed = uploadSpeed[0]
-        downloadSpeed = downloadSpeed[0]
+        uploadSpeed = round(uploadSpeed[0], 4)
+        downloadSpeed = round(downloadSpeed[0], 4)
 
         self.logger.log(Level.Trace, f"Us[{uploadSpeed} MB/s], Ds[{downloadSpeed} MB/s]")
 
         if self.showUpload:
-            uploadSpeed = Util.getPercent(0, 50, uploadSpeed)
+            uploadSpeed = round(Util.getPercent(0, 50, uploadSpeed), 4)
             RainbowHatUtil.show_graph(uploadSpeed, Util.lerp(0, 255, uploadSpeed), Util.lerp(255, 0, uploadSpeed), 0)
             RainbowHatUtil.display_message(uploadSpeed * 100)
             RainbowHatUtil.show_rgb(1, 0, 1)
         else:
-            downloadSpeed = Util.getPercent(0, 50, downloadSpeed)
+            downloadSpeed = round(Util.getPercent(0, 50, downloadSpeed), 4)
             RainbowHatUtil.show_graph(downloadSpeed, Util.lerp(0, 255, downloadSpeed), Util.lerp(255, 0, downloadSpeed), 0)
             RainbowHatUtil.display_message(downloadSpeed * 100)
             RainbowHatUtil.show_rgb(0, 1, 1)
