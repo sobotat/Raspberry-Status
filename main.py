@@ -60,6 +60,7 @@ def resetTimeToOff(multiplier=1):
 def touch_a(channel):
     global tempScreen, netScreen, currentScreen
     if currentScreen == netScreen:
+        logger.log(Level.Warn, 'NetScreen mode changed [Upload]')
         netScreen.showUpload = True
         changeScreen(netScreen)
         resetTimeToOff(multiplier=4)
@@ -71,6 +72,7 @@ def touch_a(channel):
 def touch_b(channel):
     global cpuLoadScreen, netScreen, currentScreen
     if currentScreen == netScreen:
+        logger.log(Level.Warn, 'NetScreen mode changed [Download]')
         netScreen.showUpload = False
         changeScreen(netScreen)
         resetTimeToOff(multiplier=4)
