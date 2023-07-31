@@ -30,6 +30,11 @@ class NetScreen(Screen):
 
     def activated(self):
         self.logger.log(Level.Warn, 'Net Screen Activated')
+        uploadSpeed = NetInfo.getUploadSpeed(0.1, self.lastUploadBytes, NetUnit.MB)
+        downloadSpeed = NetInfo.getDownloadSpeed(0.1, self.lastDownloadBytes, NetUnit.MB)
+
+        self.lastUploadBytes = uploadSpeed[1]
+        self.lastDownloadBytes = downloadSpeed[1]
     
     def deactivated(self):
         self.logger.log(Level.Warn, 'Net Screen Deactivated')
