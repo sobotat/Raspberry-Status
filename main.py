@@ -80,10 +80,14 @@ def touch_b(channel):
 
 @rh.touch.C.press()
 def touch_c(channel):
-    global netScreen
-    netScreen.showUpload = True
-    changeScreen(netScreen)
-    resetTimeToOff(multiplier=4)
+    global netScreen, offScreen, remainingTime
+    if currentScreen == netScreen:
+        changeScreen(offScreen)
+        remainingTime = -1
+    else :
+        netScreen.showUpload = True
+        changeScreen(netScreen)
+        resetTimeToOff(multiplier=4)
 
 #---------------------------------------------------------------------------------------------
 
