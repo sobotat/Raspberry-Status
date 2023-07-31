@@ -58,19 +58,30 @@ def resetTimeToOff(multiplier=1):
 
 @rh.touch.A.press()
 def touch_a(channel):
-    global tempScreen
-    changeScreen(tempScreen)
-    resetTimeToOff()
+    global tempScreen, netScreen, currentScreen
+    if currentScreen == netScreen:
+        netScreen.showUpload = True
+        changeScreen(netScreen)
+        resetTimeToOff(multiplier=4)
+    else:
+        changeScreen(tempScreen)
+        resetTimeToOff()
 
 @rh.touch.B.press()
 def touch_b(channel):
-    global cpuLoadScreen
-    changeScreen(cpuLoadScreen)
-    resetTimeToOff()
+    global cpuLoadScreen, netScreen, currentScreen
+    if currentScreen == netScreen:
+        netScreen.showUpload = False
+        changeScreen(netScreen)
+        resetTimeToOff(multiplier=4)
+    else:
+        changeScreen(cpuLoadScreen)
+        resetTimeToOff()
 
 @rh.touch.C.press()
 def touch_c(channel):
     global netScreen
+    netScreen.showUpload = True
     changeScreen(netScreen)
     resetTimeToOff(multiplier=4)
 

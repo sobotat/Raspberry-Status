@@ -11,6 +11,7 @@ class NetScreen(Screen):
         self.logger = Logger('NetScreen')
         self.lastUploadBytes = 0
         self.lastDownloadBytes = 0
+        self.showUpload = True
 
     def update(self, deltaTime):
         uploadSpeed = NetInfo.getUploadSpeed(deltaTime, self.lastUploadBytes, NetUnit.MB)
@@ -23,10 +24,16 @@ class NetScreen(Screen):
 
         self.logger.log(Level.Trace, f"Us[{uploadSpeed} MB/s], Ds[{downloadSpeed} MB/s]")
 
-        uploadSpeed = Util.getPercent(0, 50, uploadSpeed)
-        RainbowHatUtil.show_graph(uploadSpeed, Util.lerp(0, 255, uploadSpeed), Util.lerp(255, 0, uploadSpeed), 0)
-        RainbowHatUtil.display_message(uploadSpeed * 100)
-        RainbowHatUtil.show_rgb(1, 1, 0)
+        if self.showUpload:
+            uploadSpeed = Util.getPercent(0, 50, uploadSpeed)
+            RainbowHatUtil.show_graph(uploadSpeed, Util.lerp(0, 255, uploadSpeed), Util.lerp(255, 0, uploadSpeed), 0)
+            RainbowHatUtil.display_message(uploadSpeed * 100)
+            RainbowHatUtil.show_rgb(1, 0, 1)
+        else:
+            downloadSpeed = Util.getPercent(0, 50, downloadSpeed)
+            RainbowHatUtil.show_graph(downloadSpeed, Util.lerp(0, 255, downloadSpeed), Util.lerp(255, 0, downloadSpeed), 0)
+            RainbowHatUtil.display_message(downloadSpeed * 100)
+            RainbowHatUtil.show_rgb(0, 1, 1)
 
     def activated(self):
         self.logger.log(Level.Warn, 'Net Screen Activated')
