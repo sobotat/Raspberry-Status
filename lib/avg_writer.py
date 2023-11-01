@@ -20,6 +20,9 @@ class AVG_Writer:
             self.avg_monitor = AVG_Monitor()
 
     def writeAVGData(self, deltaTime):
+        if (deltaTime == 0):
+            deltaTime = 0.1
+            
         uploadSpeed = NetInfo.getUploadSpeed(deltaTime, self.lastUploadBytes, NetUnit.KB)
         downloadSpeed = NetInfo.getDownloadSpeed(deltaTime, self.lastDownloadBytes, NetUnit.KB)
 
