@@ -23,9 +23,6 @@ class OffScreen(Screen):
         elif not self.nightMode and not(self.isDay()):
             self.nightMode = True
             self.logger.log(Level.Info, 'Switching to NightMode')
-            compute = self.avg_writer.avg_monitor.computeAvg()
-            self.logger.log(Level.Trace, f'AVG -> CPU[{compute[0]}] TEMP[{compute[1]}] ' + 
-                            f'Upload[{compute[2]}kb/s] Download[{compute[3]}kb/s]')
 
         if not self.nightMode:
             RainbowHatUtil.show_rgb(0, 0, 1)
@@ -36,6 +33,10 @@ class OffScreen(Screen):
         if (self.waitingFor > 10):
             self.avg_writer.writeAVGData(deltaTime)
             self.waitingFor = 0
+
+            compute = self.avg_writer.avg_monitor.computeAvg(clearData=False)
+            self.logger.log(Level.Trace, f'AVG -> CPU[{compute[0]}] TEMP[{compute[1]}] ' + 
+                            f'Upload[{compute[2]}kb/s] Download[{compute[3]}kb/s]')
 
     def activated(self):
         self.logger.log(Level.Warn, 'Off Screen Activated')
