@@ -42,4 +42,4 @@ class AVG_Monitor:
     def printAvg(self, clearData:bool = False):
         compute = self.computeAvg(clearData)
         self.logger.log(Level.Trace, f'CPU[{compute[0]} %] TEMP[{compute[1]} C] ' + 
-                        f'Upload[{compute[2]} kb/s] Download[{compute[3]} kb/s]')
+                        f'🔺[{compute[2]} kb/s] 🔻[{compute[3]} kb/s]')
