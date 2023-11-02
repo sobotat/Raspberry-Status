@@ -34,7 +34,7 @@ class OffScreen(Screen):
 
         self.timerWrite += deltaTime
         if (self.timerWrite > 10):
-            self.avg_writer.writeAVGData(deltaTime)
+            self.avg_writer.writeAVGData(self.timerWrite)
             self.timerWrite = 0
 
         self.timerPrint += deltaTime
@@ -45,6 +45,9 @@ class OffScreen(Screen):
     def activated(self):
         self.logger.log(Level.Warn, 'Off Screen Activated')
         RainbowHatUtil.clear()
+        self.timerWrite = 0
+        self.timerPrint = 0
+        self.avg_writer.writeAVGData(0.1)
     
     def deactivated(self):
         self.logger.log(Level.Warn, 'Off Screen Deactivated')
