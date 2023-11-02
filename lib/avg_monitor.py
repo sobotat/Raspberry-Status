@@ -1,7 +1,9 @@
+from .logger import Logger, Level
 
 class AVG_Monitor:
 
     def __init__(self) -> None:
+        self.logger = Logger('AVG_Monitor')
         self.cpuData = []
         self.tempData = []
         self.uploadData = []
@@ -36,3 +38,8 @@ class AVG_Monitor:
         self.tempData.clear()
         self.uploadData.clear()
         self.downloadData.clear()
+
+    def printAvg(self, clearData:bool = False):
+        compute = self.computeAvg(clearData)
+        self.logger.log(Level.Trace, f'CPU[{compute[0]} %] TEMP[{compute[1]} C] ' + 
+                        f'Upload[{compute[2]} kb/s] Download[{compute[3]} kb/s]')

@@ -13,32 +13,34 @@ class OffScreen(Screen):
         self.dayEndAt = dayEndAt
 
         self.nightMode = self.isDay()
-        self.waitingFor = 0
+        self.timerWrite = 0
+        self.timerPrint = 0
         self.avg_writer = AVG_Writer()
 
     def update(self, deltaTime):
         if self.nightMode and self.isDay():
             self.nightMode = False
             self.logger.log(Level.Info, 'Switching to DayMode')
-            compute = self.avg_writer.avg_monitor.computeAvg(clearData=False)
-            self.logger.log(Level.Trace, f'CPU[{compute[0]} %] TEMP[{compute[1]} C] ' + 
-                            f'Upload[{compute[2]} kb/s] Download[{compute[3]} kb/s]')
+            self.avg_writer.avg_monitor.printAvg(clearData=False)
         elif not self.nightMode and not(self.isDay()):
             self.nightMode = True
             self.logger.log(Level.Info, 'Switching to NightMode')
-            compute = self.avg_writer.avg_monitor.computeAvg(clearData=True)
-            self.logger.log(Level.Trace, f'CPU[{compute[0]} %] TEMP[{compute[1]} C] ' + 
-                            f'Upload[{compute[2]} kb/s] Download[{compute[3]} kb/s]')
+            self.avg_writer.avg_monitor.printAvg(clearData=True)
 
         if not self.nightMode:
             RainbowHatUtil.show_rgb(0, 0, 1)
         else:
             RainbowHatUtil.show_rgb(0, 0, 0)
 
-        self.waitingFor += deltaTime
-        if (self.waitingFor > 10):
+        self.timerWrite += deltaTime
+        if (self.timerWrite > 10):
             self.avg_writer.writeAVGData(deltaTime)
-            self.waitingFor = 0
+            self.timerWrite = 0
+
+        self.timerPrint += deltaTime
+        if (self.timerPrint > 3600):
+            self.avg_writer.avg_monitor.printAvg(clearData=False)
+            self.timerPrint = 0
 
     def activated(self):
         self.logger.log(Level.Warn, 'Off Screen Activated')
