@@ -2,7 +2,9 @@
 from lib.avg_monitor import AVG_Monitor
 from lib.cpu import CPUInfo
 from lib.net import NetInfo, NetUnit
+from lib.database import Database
 from random import Random
+from datetime import datetime
 
 class AVG_Writer:
     __instance = None
@@ -19,7 +21,7 @@ class AVG_Writer:
             self.lastDownloadBytes = NetInfo.getDownloadSpeed(0.1, 0, NetUnit.KB)[1]
             self.avg_monitor = AVG_Monitor()
 
-    def writeAVGData(self, deltaTime):
+    def writeAVGData(self, deltaTime, sendData:bool = True):
         if (deltaTime == 0):
             deltaTime = 0.1
             
@@ -31,9 +33,21 @@ class AVG_Writer:
         uploadSpeed = round(uploadSpeed[0], 4)
         downloadSpeed = round(downloadSpeed[0], 4)
 
+        cpu = CPUInfo.get_cpu_load()
+        temp = CPUInfo.get_cpu_temperature()
+
         self.avg_monitor.addData(
-            cpu=CPUInfo.get_cpu_load(),
-            temp=CPUInfo.get_cpu_temperature(),
+            cpu=cpu,
+            temp=temp,
             upload=uploadSpeed,
             download=downloadSpeed,
         )
+
+        if (sendData):
+            self.sendAVGData(cpu, temp, uploadSpeed, downloadSpeed)
+
+    def sendAVGData(self, cpu, temp, upload, download):
+        insert_query = "INSERT INTO raspberry_data (time, cpu, temp, upload, download) VALUES (%s, %s, %s, %s, %s)"
+
+        database = Database()
+        database.send(insert_query, (datetime.now(), cpu, temp, upload, download))
