@@ -1,6 +1,9 @@
-import docker
 from lib.database import Database
 from datetime import datetime
+try:
+    from docker import docker
+except ImportError:
+    print('Install Docker pip install docker')
 
 class Docker:
     __instance = None
