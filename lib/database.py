@@ -24,13 +24,22 @@ class Database:
             self.connection.close()
 
     def initDB(self):
-        create_table_query = '''
+        table_raspberry_data = '''
             CREATE TABLE IF NOT EXISTS raspberry_data (
                 time TIMESTAMP PRIMARY KEY,
                 cpu FLOAT NOT NULL,
                 temp FLOAT NOT NULL,
                 upload FLOAT NOT NULL,
                 download FLOAT NOT NULL
+            );
+            '''
+        table_docker_containers_data = '''
+            CREATE TABLE IF NOT EXISTS docker_containers_data (
+                id SERIAL PRIMARY KEY,
+                name VARCHAR(100) NOT NULL,
+                image  VARCHAR(100) NOT NULL,
+                is_running BOOLEAN NOT NULL,
+                time TIMESTAMP NOT NULL
             );
             '''
 
@@ -42,7 +51,8 @@ class Database:
             password="grafana")
 
         self.cursor = self.connection.cursor()
-        self.cursor.execute(create_table_query)
+        self.cursor.execute(table_raspberry_data)
+        self.cursor.execute(table_docker_containers_data)
         self.connection.commit()
 
     def send(self, query:str, parameters:tuple = ()):

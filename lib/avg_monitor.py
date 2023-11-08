@@ -1,6 +1,7 @@
 from lib.cpu import CPUInfo
 from lib.net import NetInfo, NetUnit
 from lib.database import Database
+from lib.docker import Docker
 from random import Random
 from datetime import datetime
 
@@ -17,6 +18,7 @@ class AVG_Monitor:
             AVG_Monitor.__instance = self
             self.lastUploadBytes = NetInfo.getUploadSpeed(0.1, 0, NetUnit.KB)[1]
             self.lastDownloadBytes = NetInfo.getDownloadSpeed(0.1, 0, NetUnit.KB)[1]
+            self.docker = Docker()
 
     def writeAVGData(self, deltaTime):
         if (deltaTime == 0):
@@ -34,6 +36,7 @@ class AVG_Monitor:
         temp = CPUInfo.get_cpu_temperature()
 
         self.sendAVGData(cpu, temp, uploadSpeed, downloadSpeed)
+        self.docker.sendContainersData()
 
     def sendAVGData(self, cpu, temp, upload, download):
         insert_query = "INSERT INTO raspberry_data (time, cpu, temp, upload, download) VALUES (%s, %s, %s, %s, %s)"
