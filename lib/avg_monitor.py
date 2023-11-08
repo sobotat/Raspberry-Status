@@ -1,5 +1,3 @@
-
-from lib.avg_monitor import AVG_Monitor
 from lib.cpu import CPUInfo
 from lib.net import NetInfo, NetUnit
 from lib.database import Database
