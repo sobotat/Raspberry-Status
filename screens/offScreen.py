@@ -2,7 +2,7 @@ from screens.screen import Screen
 from lib.rainbowHatUtil import RainbowHatUtil
 from lib.logger import Logger, Level
 from datetime import datetime
-from lib.avg_writer import AVG_Writer
+from lib.avg_monitor import AVG_Monitor
 
 class OffScreen(Screen):
     
@@ -14,18 +14,15 @@ class OffScreen(Screen):
 
         self.nightMode = self.isDay()
         self.timerWrite = 0
-        self.timerPrint = 0
-        self.avg_writer = AVG_Writer()
+        self.avg_monitor = AVG_Monitor()
 
     def update(self, deltaTime):
         if self.nightMode and self.isDay():
             self.nightMode = False
             self.logger.log(Level.Info, 'Switching to DayMode')
-            self.avg_writer.avg_monitor.printAvg(clearData=False)
         elif not self.nightMode and not(self.isDay()):
             self.nightMode = True
             self.logger.log(Level.Info, 'Switching to NightMode')
-            self.avg_writer.avg_monitor.printAvg(clearData=True)
 
         if not self.nightMode:
             RainbowHatUtil.show_rgb(0, 0, 1)
@@ -33,21 +30,15 @@ class OffScreen(Screen):
             RainbowHatUtil.show_rgb(0, 0, 0)
 
         self.timerWrite += deltaTime
-        if (self.timerWrite > 10):
-            self.avg_writer.writeAVGData(self.timerWrite)
+        if (self.timerWrite > 15):
+            self.avg_monitor.writeAVGData(self.timerWrite)
             self.timerWrite = 0
-
-        self.timerPrint += deltaTime
-        if (self.timerPrint > 3600):
-            self.avg_writer.avg_monitor.printAvg(clearData=False)
-            self.timerPrint = 0
 
     def activated(self):
         self.logger.log(Level.Warn, 'Off Screen Activated')
         RainbowHatUtil.clear()
         self.timerWrite = 0
-        self.timerPrint = 0
-        self.avg_writer.writeAVGData(0.1)
+        self.avg_monitor.writeAVGData(0.1)
     
     def deactivated(self):
         self.logger.log(Level.Warn, 'Off Screen Deactivated')

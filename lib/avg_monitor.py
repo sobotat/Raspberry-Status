@@ -1,45 +1,44 @@
-from .logger import Logger, Level
+
+from lib.avg_monitor import AVG_Monitor
+from lib.cpu import CPUInfo
+from lib.net import NetInfo, NetUnit
+from lib.database import Database
+from random import Random
+from datetime import datetime
 
 class AVG_Monitor:
+    __instance = None
+
+    def __new__(cls):
+        if not hasattr(cls, 'instance'):
+            cls.instance = super(AVG_Monitor, cls).__new__(cls)
+        return cls.instance
 
     def __init__(self) -> None:
-        self.logger = Logger('AVG_Monitor')
-        self.cpuData = []
-        self.tempData = []
-        self.uploadData = []
-        self.downloadData = []
+        if AVG_Monitor.__instance is None:
+            AVG_Monitor.__instance = self
+            self.lastUploadBytes = NetInfo.getUploadSpeed(0.1, 0, NetUnit.KB)[1]
+            self.lastDownloadBytes = NetInfo.getDownloadSpeed(0.1, 0, NetUnit.KB)[1]
 
-        self.lastAvgCpu = 0
-        self.lastAvgTemp = 0
-        self.lastAvgUpload = 0
-        self.lastAvgDownload = 0
+    def writeAVGData(self, deltaTime):
+        if (deltaTime == 0):
+            deltaTime = 0.1
+            
+        uploadSpeed = NetInfo.getUploadSpeed(deltaTime, self.lastUploadBytes, NetUnit.KB)
+        downloadSpeed = NetInfo.getDownloadSpeed(deltaTime, self.lastDownloadBytes, NetUnit.KB)
 
-    def addData(self, cpu:float, temp:float, upload:int, download:int):
-        self.cpuData.append(cpu)
-        self.tempData.append(temp)
-        self.uploadData.append(upload)
-        self.downloadData.append(download)
+        self.lastUploadBytes = uploadSpeed[1]
+        self.lastDownloadBytes = downloadSpeed[1]
+        uploadSpeed = round(uploadSpeed[0], 4)
+        downloadSpeed = round(downloadSpeed[0], 4)
 
-    def computeAvg(self, clearData:bool = True):
-        try:
-            self.lastAvgCpu = round(sum(self.cpuData) / len(self.cpuData) * 1000) / 1000
-            self.lastAvgTemp = round(sum(self.tempData) / len(self.tempData) * 1000) / 1000
-            self.lastAvgUpload = round(sum(self.uploadData) / len(self.uploadData) * 1000) / 1000
-            self.lastAvgDownload = round(sum(self.downloadData) / len(self.downloadData) * 1000) / 1000
+        cpu = CPUInfo.get_cpu_load()
+        temp = CPUInfo.get_cpu_temperature()
 
-            if clearData: 
-                self.clear()
-        except:
-            return (0, 0, 0, 0)
-        return (self.lastAvgCpu, self.lastAvgTemp, self.lastAvgUpload, self.lastAvgDownload)
-        
-    def clear(self):
-        self.cpuData.clear()
-        self.tempData.clear()
-        self.uploadData.clear()
-        self.downloadData.clear()
+        self.sendAVGData(cpu, temp, uploadSpeed, downloadSpeed)
 
-    def printAvg(self, clearData:bool = False):
-        compute = self.computeAvg(clearData)
-        self.logger.log(Level.Trace, f'CPU[{compute[0]} %] TEMP[{compute[1]} C] ' + 
-                        f'🔺[{compute[2]} kb/s] 🔻[{compute[3]} kb/s]')
+    def sendAVGData(self, cpu, temp, upload, download):
+        insert_query = "INSERT INTO raspberry_data (time, cpu, temp, upload, download) VALUES (%s, %s, %s, %s, %s)"
+
+        database = Database()
+        database.send(insert_query, (datetime.now(), cpu, temp, upload, download))
