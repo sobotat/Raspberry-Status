@@ -22,7 +22,7 @@ class NetScreen(Screen):
         uploadSpeed = round(uploadSpeed[0], 4)
         downloadSpeed = round(downloadSpeed[0], 4)
 
-        self.logger.log(Level.Trace, f"Us[{uploadSpeed} MB/s], Ds[{downloadSpeed} MB/s]")
+        self.logger.log(Level.Trace, f"🔺[{uploadSpeed} MB/s], 🔻[{downloadSpeed} MB/s]")
 
         if self.showUpload:
             uploadSpeed = round(Util.getPercent(0, 50, uploadSpeed), 4)
