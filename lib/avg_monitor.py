@@ -2,6 +2,7 @@ from lib.cpu import CPUInfo
 from lib.net import NetInfo, NetUnit
 from lib.database import Database
 from lib.docker_api import DockerApi
+from lib.ssh_api import SSHApi
 from random import Random
 from datetime import datetime
 
@@ -35,11 +36,15 @@ class AVG_Monitor:
         cpu = CPUInfo.get_cpu_load()
         temp = CPUInfo.get_cpu_temperature()
 
-        self.sendAVGData(cpu, temp, uploadSpeed, downloadSpeed)
+        sshApi = SSHApi()
+        users = sshApi.getUsers()
+        active_ssh = len(sshApi.getActiveUsers(users))
+
+        self.sendAVGData(cpu, temp, uploadSpeed, downloadSpeed, active_ssh)
         self.dockerApi.sendContainersData()
 
-    def sendAVGData(self, cpu, temp, upload, download):
-        insert_query = "INSERT INTO raspberry_data (time, cpu, temp, upload, download) VALUES (%s, %s, %s, %s, %s)"
+    def sendAVGData(self, cpu, temp, upload, download, active_ssh):
+        insert_query = "INSERT INTO raspberry_data (time, cpu, temp, upload, download, active_ssh) VALUES (%s, %s, %s, %s, %s, %s)"
 
         database = Database()
-        database.send(insert_query, (datetime.now(), cpu, temp, upload, download))
+        database.send(insert_query, (datetime.now(), cpu, temp, upload, download, active_ssh))

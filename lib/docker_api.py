@@ -23,7 +23,11 @@ class DockerApi:
         for container in list:
             if len(container.image.tags) == 0: continue
             name = container.image.tags[0]
-            out.append((container.name, name, container.status))
+            out.append({
+                'container-name': container.name, 
+                'image-name':name, 
+                'status':container.status
+            })
         return out
     
     def getImagesData(self):
@@ -36,11 +40,15 @@ class DockerApi:
             if len(image.tags) == 0: continue
             name = image.tags[0]
             for container in containers:
-                if container[1] == name:
+                if container['image-name'] == name:
                     using += 1
-                    active += (1 if container[2] == 'running' else 0)
+                    active += (1 if container['status'] == 'running' else 0)
 
-            out.append((name, using, active))
+            out.append({
+                'image-name': name, 
+                'using': using, 
+                'active': active
+            })
         return out
     
     def sendContainersData(self):
@@ -53,7 +61,7 @@ class DockerApi:
         active = 0
 
         for container in list:
-            active += 1 if container[2] == 'running' else 0
+            active += 1 if container['status'] == 'running' else 0
             count += 1
 
         database.send(insert_query, (date, count, active))

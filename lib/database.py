@@ -30,7 +30,8 @@ class Database:
                 cpu FLOAT NOT NULL,
                 temp FLOAT NOT NULL,
                 upload FLOAT NOT NULL,
-                download FLOAT NOT NULL
+                download FLOAT NOT NULL,
+                active_ssh FLOAT NOT NULL
             );
             '''
         table_docker_containers_data = '''
