@@ -1,7 +1,7 @@
 from lib.cpu import CPUInfo
 from lib.net import NetInfo, NetUnit
 from lib.database import Database
-from lib.docker import Docker
+from lib.docker_api import DockerApi
 from random import Random
 from datetime import datetime
 
@@ -18,7 +18,7 @@ class AVG_Monitor:
             AVG_Monitor.__instance = self
             self.lastUploadBytes = NetInfo.getUploadSpeed(0.1, 0, NetUnit.KB)[1]
             self.lastDownloadBytes = NetInfo.getDownloadSpeed(0.1, 0, NetUnit.KB)[1]
-            self.docker = Docker()
+            self.docker = DockerApi()
 
     def writeAVGData(self, deltaTime):
         if (deltaTime == 0):

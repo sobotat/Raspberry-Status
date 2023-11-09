@@ -5,16 +5,16 @@ try:
 except ImportError:
     print('Install Docker pip install docker')
 
-class Docker:
+class DockerApi:
     __instance = None
 
     def __new__(cls):
         if not hasattr(cls, 'instance'):
-            cls.instance = super(Docker, cls).__new__(cls)
+            cls.instance = super(DockerApi, cls).__new__(cls)
         return cls.instance
 
     def __init__(self) -> None:
-        if Docker.__instance is None:
+        if DockerApi.__instance is None:
             self.client = docker.DockerClient()
 
     def getContainersData(self):
