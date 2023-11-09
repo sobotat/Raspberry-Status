@@ -1,7 +1,7 @@
 from lib.database import Database
 from datetime import datetime
 try:
-    from docker import docker
+    from docker import DockerClient
 except ImportError:
     print('Install Docker pip install docker')
 
@@ -15,7 +15,7 @@ class Docker:
 
     def __init__(self) -> None:
         if Docker.__instance is None:
-            self.client = docker.from_env()
+            self.client = DockerClient()
 
     def getContainersData(self):
         list = self.client.containers.list(all=True)
@@ -23,7 +23,7 @@ class Docker:
         for container in list:
             if len(container.image.tags) == 0: continue
             name = container.image.tags[0]
-            out.append((container.id, name, container.status))
+            out.append((container.name, name, container.status))
         return out
     
     def getImagesData(self):
