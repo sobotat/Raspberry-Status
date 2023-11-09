@@ -1,7 +1,7 @@
 from lib.database import Database
 from datetime import datetime
 try:
-    from docker import DockerClient
+    import docker
 except ImportError:
     print('Install Docker pip install docker')
 
@@ -15,7 +15,7 @@ class Docker:
 
     def __init__(self) -> None:
         if Docker.__instance is None:
-            self.client = DockerClient()
+            self.client = docker.DockerClient()
 
     def getContainersData(self):
         list = self.client.containers.list(all=True)
