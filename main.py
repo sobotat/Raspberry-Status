@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 import time, atexit, signal, sys
 from lib.logger import Logger, Level
-from lib.docker_api import DockerApi
 from lib.rainbowHatUtil import RainbowHatUtil
 from screens.screen import Screen
 from screens.tempScreen import TempScreen
@@ -31,9 +30,6 @@ Logger.logConsoleToLevel = Level.Off
 Logger.logFileToLevel = Level.All
 Logger.fileName = 'output.log'
 logger = Logger('Main')
-
-#Load of Docker
-DockerApi()
 
 #Kill signal
 signal.signal(signal.SIGTERM, kill_handler)
