@@ -36,8 +36,8 @@ class Database:
         table_docker_containers_data = '''
             CREATE TABLE IF NOT EXISTS docker_containers_data (
                 time TIMESTAMP PRIMARY KEY,
-                count VARCHAR(100) NOT NULL,
-                active  VARCHAR(100) NOT NULL
+                count FLOAT NOT NULL,
+                active FLOAT NOT NULL
             );
             '''
 
