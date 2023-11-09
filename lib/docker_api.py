@@ -44,11 +44,18 @@ class DockerApi:
         return out
     
     def sendContainersData(self):
-        insert_query = "INSERT INTO docker_containers_data (name, image, is_running, time) VALUES (%s, %s, %s, %s)"
+        insert_query = "INSERT INTO docker_containers_data (time, count, active) VALUES (%s, %s, %s)"
         
         database = Database()
         date = datetime.now()
         list = self.getContainersData()
+        count = 0
+        active = 0
 
         for container in list:
-            database.send(insert_query, (container[0], container[1], container[2] == 'running', date))
+            active += 1 if container[2] == 'running' else 0
+            count += 1
+
+        database.send(insert_query, (date, count, active))
+        
+            

@@ -35,11 +35,9 @@ class Database:
             '''
         table_docker_containers_data = '''
             CREATE TABLE IF NOT EXISTS docker_containers_data (
-                id SERIAL PRIMARY KEY,
-                name VARCHAR(100) NOT NULL,
-                image  VARCHAR(100) NOT NULL,
-                is_running BOOLEAN NOT NULL,
-                time TIMESTAMP NOT NULL
+                time TIMESTAMP PRIMARY KEY,
+                count VARCHAR(100) NOT NULL,
+                active  VARCHAR(100) NOT NULL
             );
             '''
 
