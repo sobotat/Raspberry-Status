@@ -27,7 +27,7 @@ class NetInfo:
     def getUploadSpeed(updateTime, lastBytesSent, unit:NetUnit) -> tuple[int, int]:
         io = psutil.net_io_counters()
         uploadSpeed = io.bytes_sent - lastBytesSent
-        if updateSpeed < 0: updateSpeed = 0
+        if uploadSpeed < 0: uploadSpeed = 0
         return (uploadSpeed / updateTime / unit.value, io.bytes_sent)
 
     def getDownloadSpeed(updateTime, lastBytesRecv, unit:NetUnit) -> tuple[int, int]:
