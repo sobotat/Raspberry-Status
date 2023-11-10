@@ -55,7 +55,7 @@ class DockerApi:
         insert_query = "INSERT INTO docker_containers_data (time, count, active) VALUES (%s, %s, %s)"
         
         database = Database()
-        date = datetime.now()
+        date = datetime.utcnow()
         list = self.getContainersData()
         count = 0
         active = 0

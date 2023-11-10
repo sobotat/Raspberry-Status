@@ -47,4 +47,4 @@ class AVG_Monitor:
         insert_query = "INSERT INTO raspberry_data (time, cpu, temp, upload, download, active_ssh) VALUES (%s, %s, %s, %s, %s, %s)"
 
         database = Database()
-        database.send(insert_query, (datetime.now(), cpu, temp, upload, download, active_ssh))
+        database.send(insert_query, (datetime.utcnow(), cpu, temp, upload, download, active_ssh))
