@@ -2,14 +2,17 @@
 
 - **Btn A** = Temp
 - **Btn B** = Load
-- **Btn C** = Off
+- **Btn C** = Network Monitor Upload and Download / Off
 
-#### Run in background
+### Run in background
 ```bash
-    ./run.bash
+    sudo ./scripts/run.bash
+    ./scripts/run_monitor.bash
 ```
+Do not use *sudo* for **monitor** !!!
 
-#### Turn Off
+### Turn Off
 ```bash
-    ./kill.bash
+    sudo ./scripts/kill.bash
+    sudo ./scripts/kill_monitor.bash
 ```
