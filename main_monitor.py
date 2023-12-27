@@ -22,25 +22,15 @@ logger = Logger('Main')
 #Kill signal
 signal.signal(signal.SIGTERM, kill_handler)
 
-#Default Time to turn off
-sleepTime = 0.5
-defaultTimeToOff = 10 / sleepTime
-remainingTime = defaultTimeToOff
-
 #---------------------------------------------------------------------------------------------
 
-timerWrite = 0
+sleepTime = 60
 avg_monitor = AVG_Monitor()
 
 logger.log(Level.Info, 'Raspberry-Monitor started')
 try:
     while True:
-
-        timerWrite += sleepTime
-        if (timerWrite > 15):
-            avg_monitor.writeAVGData(timerWrite)
-            timerWrite = 0
-
+        avg_monitor.writeAVGData(sleepTime)
         time.sleep(sleepTime)
 
 except Exception as e:
