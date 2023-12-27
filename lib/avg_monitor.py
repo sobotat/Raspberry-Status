@@ -22,7 +22,7 @@ class AVG_Monitor:
             self.dockerApi = DockerApi()
 
     def writeAVGData(self, deltaTime):
-        if (deltaTime == 0):
+        if (deltaTime <= 0):
             deltaTime = 0.1
             
         uploadSpeed = NetInfo.getUploadSpeed(deltaTime, self.lastUploadBytes, NetUnit.KB)
