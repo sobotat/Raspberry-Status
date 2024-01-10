@@ -46,7 +46,7 @@ class Database:
             host="localhost",
             port=5400,
             database="grafana_db",
-            user="postgres",
+            user="grafana",
             password="grafana")
 
         self.cursor = self.connection.cursor()
