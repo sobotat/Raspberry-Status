@@ -14,6 +14,7 @@ class Database:
 
     def __init__(self) -> None:
         if Database.__instance is None:
+            Database.__instance = self
             self.logger = Logger('Database')
             self.connection = None
             self.cursor = None
@@ -33,6 +34,7 @@ class Database:
                 temp FLOAT NOT NULL,
                 upload FLOAT NOT NULL,
                 download FLOAT NOT NULL,
+                memory FLOAT NOT NULL,
                 active_ssh FLOAT NOT NULL
             );
             '''
