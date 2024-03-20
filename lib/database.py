@@ -2,6 +2,7 @@ try:
     import psycopg2
 except ImportError:
     print("Install Postgres pip install psycopg2-binary")
+from logger import Logger, Level
 
 class Database:
     __instance = None
@@ -13,6 +14,7 @@ class Database:
 
     def __init__(self) -> None:
         if Database.__instance is None:
+            self.logger = Logger('Database')
             self.connection = None
             self.cursor = None
             self.initDB()
@@ -23,7 +25,7 @@ class Database:
         if self.connection is not None:
             self.connection.close()
 
-    def initDB(self):
+    def initDB(self) -> bool:
         table_raspberry_data = '''
             CREATE TABLE IF NOT EXISTS raspberry_data (
                 time TIMESTAMP PRIMARY KEY,
@@ -41,20 +43,32 @@ class Database:
                 active FLOAT NOT NULL
             );
             '''
+        
+        try:
+            self.connection = psycopg2.connect(
+                host="localhost",
+                port=5400,
+                database="grafana_db",
+                user="grafana",
+                password="grafana")
 
-        self.connection = psycopg2.connect(
-            host="localhost",
-            port=5400,
-            database="grafana_db",
-            user="grafana",
-            password="grafana")
-
-        self.cursor = self.connection.cursor()
-        self.cursor.execute(table_raspberry_data)
-        self.cursor.execute(table_docker_containers_data)
-        self.connection.commit()
+            self.cursor = self.connection.cursor()
+            self.cursor.execute(table_raspberry_data)
+            self.cursor.execute(table_docker_containers_data)
+            self.connection.commit()
+            self.logger.log(Level.Info, "DB was Init")
+            return True
+        except Exception:
+            self.connection = None
+            self.cursor = None
+            self.logger.log(Level.Error, "Failed to Init DB")
+            return False
 
     def send(self, query:str, parameters:tuple = ()):
+        if self.connection == None:
+            if not self.initDB():
+                self.logger.log(Level.Error, "Failed to send quary to DB -> Not Init")
+                return
         try:
             if parameters == ():
                 self.cursor.execute(query)
