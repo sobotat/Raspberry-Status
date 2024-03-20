@@ -2,7 +2,7 @@ try:
     import psycopg2
 except ImportError:
     print("Install Postgres pip install psycopg2-binary")
-from logger import Logger, Level
+from lib.logger import Logger, Level
 
 class Database:
     __instance = None
