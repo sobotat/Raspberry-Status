@@ -15,6 +15,7 @@ class DockerApi:
 
     def __init__(self) -> None:
         if DockerApi.__instance is None:
+            DockerApi.__instance = self
             self.client = docker.DockerClient()
 
     def getContainersData(self):

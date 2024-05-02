@@ -16,15 +16,8 @@ class Database:
         if Database.__instance is None:
             Database.__instance = self
             self.logger = Logger('Database')
-            self.connection = None
-            self.cursor = None
+            self.wasInit = False
             self.initDB()
-
-    def close(self):
-        if self.cursor is not None:
-            self.cursor.close()
-        if self.connection is not None:
-            self.connection.close()
 
     def initDB(self) -> bool:
         table_raspberry_data = '''
@@ -47,35 +40,41 @@ class Database:
             '''
         
         try:
-            self.connection = psycopg2.connect(
+            connection, cursor = self.getConnection()
+            cursor.execute(table_raspberry_data)
+            cursor.execute(table_docker_containers_data)
+            connection.commit()
+            connection.close()
+            self.wasInit = True
+            self.logger.log(Level.Info, "DB was Init")
+            return True
+        except Exception:
+            self.logger.log(Level.Error, "Failed to Init DB")
+            return False
+
+    def send(self, query:str, parameters:tuple = ()):
+        if not self.wasInit:
+            if not self.initDB():
+                self.logger.log(Level.Error, "Failed to send quary to DB -> Not Init")
+                return
+        try:
+            connection, cursor = self.getConnection()
+            if parameters == ():
+                cursor.execute(query)
+            else:
+                cursor.execute(query, parameters)
+            connection.commit()
+            connection.close()
+        except Exception as e:
+            self.logger.log(Level.Error, f"Send Failed: {e}")
+
+    def getConnection(self):
+        connection = psycopg2.connect(
                 host="localhost",
                 port=5400,
                 database="grafana_db",
                 user="grafana",
                 password="grafana")
 
-            self.cursor = self.connection.cursor()
-            self.cursor.execute(table_raspberry_data)
-            self.cursor.execute(table_docker_containers_data)
-            self.connection.commit()
-            self.logger.log(Level.Info, "DB was Init")
-            return True
-        except Exception:
-            self.connection = None
-            self.cursor = None
-            self.logger.log(Level.Error, "Failed to Init DB")
-            return False
-
-    def send(self, query:str, parameters:tuple = ()):
-        if self.connection == None:
-            if not self.initDB():
-                self.logger.log(Level.Error, "Failed to send quary to DB -> Not Init")
-                return
-        try:
-            if parameters == ():
-                self.cursor.execute(query)
-            else:
-                self.cursor.execute(query, parameters)
-            self.connection.commit()
-        except Exception as e:
-            print(f"Error: {e}")
+        cursor = connection.cursor()
+        return connection, cursor

@@ -1,7 +1,7 @@
 from screens.screen import Screen
 from lib.rainbowHatUtil import RainbowHatUtil
 from lib.logger import Logger, Level
-from lib.cpu import CPUInfo
+from lib.info import CPUInfo
 from lib.util import Util
 
 class CPULoadScreen(Screen):
